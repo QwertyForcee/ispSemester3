@@ -19,6 +19,7 @@ namespace TxtManager
             this.targetDir = targetDir;
             this.sourceDir = sourceDir;
             watcher = new FileSystemWatcher(sourceDir);
+            manager = new TxtManager();
             watcher.Deleted += Watcher_Deleted;
             watcher.Created += Watcher_Created;
             watcher.Changed += Watcher_Changed;
