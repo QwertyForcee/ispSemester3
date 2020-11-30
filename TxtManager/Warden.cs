@@ -10,16 +10,21 @@ namespace TxtManager
     {
         FileSystemWatcher watcher;
         TxtManager manager;
+        ConfigurationManager configuration;
+        Settings settings;
         object obj = new object();
         bool enabled = true;
         string targetDir;
         string sourceDir;
-        public Warden(string targetDir,string sourceDir)
-        {   
-            this.targetDir = targetDir;
-            this.sourceDir = sourceDir;
-            watcher = new FileSystemWatcher(sourceDir);
-            manager = new TxtManager();
+        public Warden(string targetDir,string sourceDir, ConfigurationManager configuration)
+        {
+            this.configuration = configuration;
+            settings = configuration.ParseSettings();
+            this.targetDir = settings.TargetPath;
+            this.sourceDir = settings.SourcePath;
+            watcher = new FileSystemWatcher(this.sourceDir);
+            manager = new TxtManager("qwertyui",settings);// "qwertyui" - ключ
+
             watcher.Deleted += Watcher_Deleted;
             watcher.Created += Watcher_Created;
             watcher.Changed += Watcher_Changed;
@@ -56,10 +61,19 @@ namespace TxtManager
         // создание файлов
         private void Watcher_Created(object sender, FileSystemEventArgs e)
         {
-            string fileEvent = "создан";
-            string filePath = e.FullPath;
-            manager.Send("D:\\TargetDir", e.FullPath);
-            RecordEntry(fileEvent, filePath);
+            if (e.FullPath.EndsWith(".txt"))
+            {
+                string fileEvent = "создан";
+                string filePath = e.FullPath;
+                manager.Send(e.FullPath);
+                RecordEntry(fileEvent, filePath);
+            }
+            else
+            {
+                string fileEvent = "не имеет расширение .txt";
+                string filePath = e.FullPath;
+                RecordEntry(fileEvent, filePath);
+            }
         }
         // удаление файлов
         private void Watcher_Deleted(object sender, FileSystemEventArgs e)
@@ -73,7 +87,7 @@ namespace TxtManager
         {
             lock (obj)
             {
-                using (StreamWriter writer = new StreamWriter("D:\\templog.txt", true))
+                using (StreamWriter writer = new StreamWriter(settings.LogsPath, true))
                 {
                     writer.WriteLine(String.Format("{0} файл {1} был {2}",
                         DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"), filePath, fileEvent));
