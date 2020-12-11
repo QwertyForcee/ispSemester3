@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataManager\DataManager.csproj" />
     <ProjectReference Include="..\TxtManager\TxtManager.csproj" />
   </ItemGroup>
 

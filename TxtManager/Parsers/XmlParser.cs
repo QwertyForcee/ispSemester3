@@ -30,7 +30,6 @@ namespace TxtManager.Parsers
                 schema.Add("", ConfigPath);
                 XmlDocument document = new XmlDocument();
                 document.Load(Path);
-                //document.LoadXml(Path);
                 document.Schemas = schema;
                 ValidationEventHandler eventHandler = new ValidationEventHandler(ValidationEventHandler);
                 document.Validate(eventHandler);              

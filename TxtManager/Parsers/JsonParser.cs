@@ -10,7 +10,7 @@ using TxtManager;
 
 namespace TxtManager.Parsers
 {
-    class JsonParser:IParser
+    public class JsonParser:IParser
     {
         private string Path { get; }
         private string ConfigPath { get; }
@@ -37,5 +37,6 @@ namespace TxtManager.Parsers
                 throw new Exception($"{e.Message} --- Source:{e.Source}");
             }
         }
+
     }
 }

@@ -16,7 +16,7 @@ namespace TxtManager
         bool enabled = true;
         string targetDir;
         string sourceDir;
-        public Warden(string targetDir,string sourceDir, ConfigurationManager configuration)
+        public Warden(ConfigurationManager configuration)
         {
             this.configuration = configuration;
             settings = configuration.ParseSettings();
