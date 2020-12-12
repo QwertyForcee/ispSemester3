@@ -17,7 +17,7 @@ namespace labalabalaba2
         {
             static Warden warden = new Warden(new ConfigurationManager("D:\\VS Maxim\\labalabalaba2\\labalabalaba2\\config.xml", "D:\\VS Maxim\\labalabalaba2\\labalabalaba2\\config.xsd"));
             const string breakString = "break";
-            static void Main(string[] args)
+            static void Main(string[] args) 
             {
 
             string userTry;
