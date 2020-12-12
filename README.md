@@ -35,4 +35,6 @@ DataManager использует конфигурацию *dbconfig.json*:
 
 ![XML файл](https://i.imgur.com/S2J7ECh.png)
 
+видео с примером: https://youtu.be/bBZ1h7G4XU0
+
 Все.
