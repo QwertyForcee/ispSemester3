@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DataManager.Configuration
 {
-    public class DataManagerConfigModel
+    public class DataManagerConfigModel //Конфигурация DataManager
     {
         public string ConnectionString { get; set; }
         public string StoreProcedure { get; set; }
@@ -12,7 +12,5 @@ namespace DataManager.Configuration
         public string PersonNamesProcedure{get;set;}
         public string PersonEmailProcedure { get; set; }
         public string PersonPhoneProcedure { get; set; }
-
-
     }
 }

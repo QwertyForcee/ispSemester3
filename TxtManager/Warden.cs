@@ -61,16 +61,16 @@ namespace TxtManager
         // создание файлов
         private void Watcher_Created(object sender, FileSystemEventArgs e)
         {
-            if (e.FullPath.EndsWith(".txt"))
+            if (e.FullPath.EndsWith(".txt") || e.FullPath.EndsWith(".xml")) 
             {
                 string fileEvent = "создан";
                 string filePath = e.FullPath;
-                manager.Send(e.FullPath);
+                manager.Send(e.FullPath,Path.GetExtension(e.FullPath));
                 RecordEntry(fileEvent, filePath);
             }
             else
             {
-                string fileEvent = "не имеет расширение .txt";
+                string fileEvent = "не имеет расширение .txt или .xml";
                 string filePath = e.FullPath;
                 RecordEntry(fileEvent, filePath);
             }

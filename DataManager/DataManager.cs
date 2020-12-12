@@ -7,6 +7,9 @@ using System.Text;
 using System.Transactions;
 using Models;
 using DataManager.Configuration;
+using XmlGen;
+using FileManager;
+
 namespace DataManager
 {
     public class DataManager
@@ -25,6 +28,9 @@ namespace DataManager
         Person PersonToSend { get; set; }
         Store StoreToSend { get; set; }
         BusinessEntityContact BusinessEntityContact { get; set; }
+        ToFileModel result = new ToFileModel();
+
+        string xmlFileName = "file.xml";
 
 
         public void Extract(string request)
@@ -47,9 +53,11 @@ namespace DataManager
                         PersonToSend.GetPersonEmail(config.PersonEmailProcedure, connection, BEID);
                         PersonToSend.GetPersonPhone(config.PersonPhoneProcedure, connection, BEID);
                         Console.WriteLine(PersonToSend.FirstName);
-                        Console.WriteLine(PersonToSend.LastName);
+                        Console.WriteLine(PersonToSend.LastName); 
                         Console.WriteLine(PersonToSend.PhoneNumber);
                         Console.WriteLine(PersonToSend.EmailAddress);
+                        result._Person = PersonToSend;
+                        result._Store = StoreToSend;
                     }
 
                 }
@@ -59,42 +67,41 @@ namespace DataManager
                 Console.WriteLine(ex.Message);
             }
         }
-
-        //DURING TEST!!!
-        public void GetSomeShit(string connectString,string commandText)
+        public void GenerateXml(string path,ToFileModel toFileModel)
         {
             try
-            {
-                using (TransactionScope scope=new TransactionScope())
-                {
-                    using (SqlConnection connection = new SqlConnection(connectString))
-                    {                        
-                        connection.Open();                     
-                        SqlCommand command1 = new SqlCommand(commandText, connection);
-                        command1.CommandType = CommandType.StoredProcedure;
-                        SqlDataReader reader = command1.ExecuteReader();
-                        if (reader.HasRows)
-                        {
-                            while (reader.Read())
-                            {
-                                object obj1 = reader.GetValue(0);
-                                object obj2 = reader.GetValue(1);
-                                object obj3 = reader.GetValue(2);
-                                Console.WriteLine("{0} \t{1} \t{2}", obj1, obj2, obj3);
-                            }                    
-                        }
-                    }
-
-                }
-
+            {             
+                XmlGenerator.ConvertToXml(path, toFileModel);
             }
-            catch (TransactionAbortedException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Converting to XML failed. {ex.Message}");
             }
         }
-
-
-
+        public void GenerateXml()
+        {          
+            try
+            {
+                xmlFileName = $"{DateTime.Now.Ticks}.xml";
+                XmlGenerator.ConvertToXml(xmlFileName, result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Converting to XML failed. {ex.Message}");
+            }
+        }
+        public void TransferFile(string destination)
+        {
+           
+            try
+            {
+                destination = Path.Join(destination, xmlFileName);
+                FileTransfer.Transfer(xmlFileName, destination);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Transfering file failed. {ex.Message}");
+            }
+        }     
     }
 }

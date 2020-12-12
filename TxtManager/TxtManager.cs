@@ -17,12 +17,12 @@ namespace TxtManager
         private Settings settings;
         private readonly string sKey;
         //основной метод
-        public void Send(string FullPath) 
+        public void Send(string FullPath, string extension) 
         {
             string currentString = FullPath;    
             if (settings.NeedToEncrypt)
             {
-                string encFilePath = currentString.Replace(".txt", ".des");
+                string encFilePath = currentString.Replace(extension, ".des");
                 EncryptFile(currentString, encFilePath, sKey);
                 currentString = encFilePath;
             }
@@ -41,7 +41,7 @@ namespace TxtManager
                 if (settings.NeedToEncrypt) { 
                     currentString = Path.ChangeExtension(archiveZipFile, ".des");
                 }
-                else currentString = Path.ChangeExtension(archiveZipFile, ".txt");
+                else currentString = Path.ChangeExtension(archiveZipFile, extension);
                 Decompress(archiveZipFile, currentString);
             }
             string targetFolder = $"{settings.TargetPath}\\{DateTime.Now.Year}\\{DateTime.Now.Month}\\{DateTime.Now.Day}";
@@ -51,9 +51,9 @@ namespace TxtManager
             }
             if (settings.NeedToEncrypt)
             {
-                DencryptFile(currentString, Path.ChangeExtension(currentString, ".txt"), sKey);
+                DencryptFile(currentString, Path.ChangeExtension(currentString, extension), sKey);
                 File.Delete(currentString);
-                currentString = Path.ChangeExtension(currentString, ".txt");
+                currentString = Path.ChangeExtension(currentString, extension);
             }
             string finalFileName = $"{targetFolder}\\{Path.GetFileName(currentString)}";
             File.Move(currentString, finalFileName);

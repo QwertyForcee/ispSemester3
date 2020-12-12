@@ -10,7 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FileManager\FileManager.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\XmlGenerator\XmlGenerator.csproj" />
   </ItemGroup>
 
 </Project>
