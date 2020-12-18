@@ -35,7 +35,7 @@ namespace TxtManager
                 {
                     Directory.CreateDirectory(archiveFolder);
                 }
-                string archiveZipFile = $"{archiveFolder}\\Sales_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Hour}_{DateTime.Now.Minute}.zip";
+                string archiveZipFile = $"{archiveFolder}\\Sales_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.zip";
                 File.Move(zipFileName, archiveZipFile);
                 File.Delete(currentString);
                 if (settings.NeedToEncrypt) { 

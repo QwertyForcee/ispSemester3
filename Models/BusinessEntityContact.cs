@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Models
 {
@@ -27,6 +28,26 @@ namespace Models
                 }
             }
             reader.Close();
+        }
+        public async Task GetDataFromDBAsync(string command, SqlConnection connection, object value)
+        {
+            await Task.Run(() =>
+            {
+                SqlCommand command1 = new SqlCommand(command, connection);
+                command1.CommandType = CommandType.StoredProcedure;
+                command1.Parameters.AddWithValue("@BusinessEntityID", value);
+                if (!(connection.State == ConnectionState.Open)) connection.Open();
+                SqlDataReader reader = command1.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        BusinessEntityID = reader.GetInt32(0);
+                        PersonID = reader.GetInt32(1);
+                    }
+                }
+                reader.Close();
+            });
         }
     }
 }

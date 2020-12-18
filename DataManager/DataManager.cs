@@ -9,6 +9,7 @@ using Models;
 using DataManager.Configuration;
 using XmlGen;
 using FileManager;
+using System.Threading.Tasks;
 
 namespace DataManager
 {
@@ -67,6 +68,33 @@ namespace DataManager
                 Console.WriteLine(ex.Message);
             }
         }
+
+        public async Task BeginExtractAsync(string request)
+        {
+            PersonToSend = new Person();
+            StoreToSend = new Store();
+            BusinessEntityContact = new BusinessEntityContact();
+            int BEID;
+            try
+            {
+                    using (SqlConnection connection = new SqlConnection(config.ConnectionString))
+                    {
+                        await StoreToSend.GetStoreFromDBAsync(config.StoreProcedure, connection, request);
+                        BEID = StoreToSend.BusinessEntityID;
+                        await BusinessEntityContact.GetDataFromDBAsync(config.EntityContactProcedure, connection, BEID);
+                        BEID--;
+                        await PersonToSend.GetPersonNamesAsync(config.PersonNamesProcedure, connection, BEID);
+                        await PersonToSend.GetPersonEmailAsync(config.PersonEmailProcedure, connection, BEID);
+                        await PersonToSend.GetPersonPhoneAsync(config.PersonPhoneProcedure, connection, BEID);                    
+                        result._Person = PersonToSend;
+                        result._Store = StoreToSend;
+                    }            
+            }
+            catch (TransactionAbortedException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
         public void GenerateXml(string path,ToFileModel toFileModel)
         {
             try
@@ -90,6 +118,21 @@ namespace DataManager
                 Console.WriteLine($"Converting to XML failed. {ex.Message}");
             }
         }
+        public async Task GenerateXmlAsync()
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    xmlFileName = $"{DateTime.Now.Ticks}.xml";
+                    XmlGenerator.ConvertToXml(xmlFileName, result);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Converting to XML failed. {ex.Message}");
+                }
+            });
+        }
         public void TransferFile(string destination)
         {
            
@@ -102,6 +145,21 @@ namespace DataManager
             {
                 Console.WriteLine($"Transfering file failed. {ex.Message}");
             }
-        }     
+        }
+        public async Task TransferFileAsync(string destination)
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    destination = Path.Join(destination, xmlFileName);
+                    FileTransfer.Transfer(xmlFileName, destination);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Transfering file failed. {ex.Message}");
+                }
+            });
+        }
     }
 }

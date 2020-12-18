@@ -11,34 +11,28 @@ using DataManager;
 using Models;
 using DataManager.Configuration;
 using XmlGen;
+using System.Threading.Tasks;
+
 namespace labalabalaba2
 {  
         class Program
         {
             static Warden warden = new Warden(new ConfigurationManager("D:\\VS Maxim\\labalabalaba2\\labalabalaba2\\config.xml", "D:\\VS Maxim\\labalabalaba2\\labalabalaba2\\config.xsd"));
+            static DataManager.DataManager dataManager1 = new DataManager.DataManager(new DataManagerConfigurationManager(), @"D:\VS Maxim\labalabalaba2\labalabalaba2\dbconfig.json");
             const string breakString = "break";
+            static UserInterface userInterface;
+
+
             static void Main(string[] args) 
             {
-
-            string userTry;
-               Thread thread = new Thread(new ThreadStart(WardenStart));
-               thread.Start();
-            Console.WriteLine("Shop Name:");
-            userTry = Console.ReadLine();
-            Example(userTry);
+                   userInterface = new UserInterface(dataManager1);
+                   Thread thread = new Thread(new ThreadStart(WardenStart));
+                   thread.Start();
+                   userInterface.MainMenu();      
             }
             public static void WardenStart()
             {
                  warden.Start();
-            }
-
-            //test
-            static void Example(string Input)
-            {
-                 DataManager.DataManager dataManager = new DataManager.DataManager(new DataManagerConfigurationManager(), @"D:\VS Maxim\labalabalaba2\labalabalaba2\dbconfig.json");
-                 dataManager.Extract(Input);
-                 dataManager.GenerateXml();
-                 dataManager.TransferFile("D:\\SourceDir");
-            }
+            }    
         }
 }
