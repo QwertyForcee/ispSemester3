@@ -23,6 +23,7 @@ namespace labalabalaba2
             static UserInterface userInterface;
 
 
+
             static void Main(string[] args) 
             {
                    userInterface = new UserInterface(dataManager1);
